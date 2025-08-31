@@ -9,8 +9,8 @@ start_time = datetime(2025, 7, 7, 11, 00, tzinfo=JST)
 end_time = datetime(2025, 7, 14, 10, 00, tzinfo=JST)
 now = datetime.now(JST)
 
-st.set_page_config(page_title="新津田沼教室入塾テスト合否結果", page_icon="🔢")
-st.title("📈 新津田沼教室入塾テスト合否結果")
+st.set_page_config(page_title="船橋習志野エリア入塾テスト合否結果", page_icon="🔢")
+st.title("📈 船橋習志野エリア入塾テスト合否結果")
 
 # 公開期間チェック
 if now < start_time:
