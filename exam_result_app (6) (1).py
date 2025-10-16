@@ -6,7 +6,7 @@ import re
 # 日本時間（JST: UTC+9）
 JST = timezone(timedelta(hours=9))
 start_time = datetime(2025, 7, 7, 11, 00, tzinfo=JST)
-end_time = datetime(2025, 7, 14, 10, 00, tzinfo=JST)
+end_time = datetime(2025, 11, 14, 10, 00, tzinfo=JST)
 now = datetime.now(JST)
 
 st.set_page_config(page_title="船橋習志野エリア入塾テスト合否結果", page_icon="🔢")
