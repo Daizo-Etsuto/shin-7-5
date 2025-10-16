@@ -1,12 +1,12 @@
-# app.py（合否データ + 公開期間 + 入力制限 + 図版 + 合格者GIF表示 + 日本時間対応）
 import streamlit as st
 from datetime import datetime, timezone, timedelta
+import pandas as pd
 import re
 
 # 日本時間（JST: UTC+9）に設定
 JST = timezone(timedelta(hours=9))
 start_time = datetime(2025, 7, 7, 11, 00, tzinfo=JST)
-end_time = datetime(2025, 7, 14, 10, 00, tzinfo=JST)
+end_time = datetime(2025, 11, 14, 10, 00, tzinfo=JST)
 now = datetime.now(JST)
 
 st.set_page_config(page_title="船橋習志野エリア入塾テスト合否結果", page_icon="🔢")
@@ -21,40 +21,53 @@ elif now > end_time:
     st.stop()
 else:
     st.markdown("""
-    受験番号とパスワードを入力してください。
+    受験番号とIDを入力してください。
     （※ 半角英数字のみ、有効な入力は自動的に大文字に変換されます）
     """)
 
-    # 合否データ（受験番号, パスワード） → 結果
-    data = {
-        ('9S601', '81070'): '合格です。',
-        ('9C101', '25243'): '合格です',
-        ('9C102', '77162'): '合格です。',
-        ('9C201', '30555'): '合格です。',
-        ('9C202', '16248'): '合格です。',
-        ('9C06', '1239'): '残念ながら、ご希望に添うことが出来ませんでした。',
-        ('9C07', '1240'): '合格です。',
-        ('9C08', '1241'): '残念ながら、ご希望に添うことが出来ませんでした。',
-    }
+    # CSVファイルの読み込み
+    try:
+        df = pd.read_csv("入塾テスト合否掲示用.csv", dtype=str)
+        df = df.fillna('')
+    except Exception as e:
+        st.error(f"データファイルの読み込みに失敗しました: {e}")
+        st.stop()
+
+    # 合否マークをメッセージに変換
+    def get_message(mark):
+        if mark == "〇":
+            return "合格です。"
+        elif mark == "×":
+            return "残念ながら、ご希望に添うことが出来ませんでした。"
+        elif mark == "△":
+            return "新津田沼教室で合格です。"
+        else:
+            return None
 
     # 入力欄
     exam_id_input = st.text_input("受験番号")
-    password_input = st.text_input("パスワード", type="password")
+    id_input = st.text_input("PW", type="password")
 
     # 入力を大文字化・半角英数字のみに制限
     def sanitize_input(text):
         return re.sub(r'[^A-Za-z0-9]', '', text.upper())
 
     exam_id = sanitize_input(exam_id_input)
-    password = sanitize_input(password_input)
+    user_id = sanitize_input(id_input)
 
     # ボタン押下で確認
     if st.button("確認する"):
-        if not exam_id or not password:
-            st.error("⚠️ 半角英数字で受験番号とパスワードを入力してください。")
+        if not exam_id or not user_id:
+            st.error("⚠️ 半角英数字で受験番号とPWを入力してください。")
         else:
-            result = data.get((exam_id, password))
-            if result:
-                st.success(f"\u2705 【結果】{result}")
+            # 入力一致データ検索
+            row = df[(df["受験番号"] == exam_id) & (df["ID"] == user_id)]
+            if not row.empty:
+                mark = row.iloc[0]["合否結果"]
+                message = get_message(mark)
+                if message:
+                    st.success(f"✅ 【結果】{message}")
+                else:
+                    st.error("⚠️ 合否結果の形式が不明です。")
             else:
-                st.error("⚠️ 受験番号あるいはパスワードが一致しません。")
+                st.error("⚠️ 受験番号あるいはPWが一致しません。")
