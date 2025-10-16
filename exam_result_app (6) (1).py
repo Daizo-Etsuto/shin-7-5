@@ -61,7 +61,7 @@ else:
             st.error("⚠️ 半角英数字で受験番号とPWを入力してください。")
         else:
             # 入力一致データ検索
-            row = df[(df["受験番号"] == exam_id) & (df["ID"] == user_id)]
+            row = df[(df["受験番号"] == exam_pw) & (df["PW"] == user_pw)]
             if not row.empty:
                 mark = row.iloc[0]["合否結果"]
                 message = get_message(mark)
