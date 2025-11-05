@@ -10,8 +10,10 @@ end_time = datetime(2025, 11, 14, 10, 0, tzinfo=JST)
 now = datetime.now(JST)
 
 st.set_page_config(page_title="船橋習志野エリア入塾テスト合否結果", page_icon="🔢")
-st.title("📈 船橋習志野エリア入塾テスト合否結果")
-
+st.markdown(
+    "<h1 style='font-size:22px;'>📈 船橋習志野エリア入塾テスト合否結果</h1>",
+    unsafe_allow_html=True
+)
 # 公開期間チェック
 if now < start_time:
     st.warning(f"このページは {start_time.strftime('%Y/%m/%d %H:%M')} から公開されます。")
