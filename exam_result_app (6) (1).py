@@ -5,7 +5,7 @@ import re
 
 # 日本時間設定
 JST = timezone(timedelta(hours=9))
-start_time = datetime(2026, 1, 26, 14, 0, tzinfo=JST)
+start_time = datetime(2025, 1, 26, 14, 0, tzinfo=JST)
 end_time = datetime(2026, 1, 31, 10, 0, tzinfo=JST)
 now = datetime.now(JST)
 
